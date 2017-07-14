@@ -13,6 +13,7 @@ import time
 import serial
 import subprocess
 import logging
+import boto3
 
 ###########
 # Globals #
@@ -36,6 +37,29 @@ except PermissionError as e:
 ###########
 # Classes #
 ###########
+
+class SQS():
+    '''
+    Here is are going to manage our SQS calls. While we could keep this linear, encapsulation
+    will make this easier to manage as multiple developers interact with this script. Remember
+    we will be following best practices, aws configure should be ran ahead of time. 
+    '''
+
+    def __init__(self):
+        '''
+        Some definitions that we can set during instantiation for the SQS Queue.
+        '''
+        self.sqs = boto3.resource('sqs')
+        self.queue_name = "GardenPY"
+        self.queue = self.sqs.get_queue_by_name(QueueName=self.queue_name)
+
+    def get_queue(self):
+        '''
+        Getter used for troubleshooting
+        '''
+        print(self.queue_name)
+        print(self.queue.url)
+
 
 #############
 # Functions #
@@ -78,4 +102,9 @@ def read_serial(usb):
 
 if __name__ == '__main__':
     logging.info("=====Beginning Execution=====")
-    usb = get_usb()
+    #usb = get_usb()
+    #data = read_serial(usb)
+    sqs = SQS()
+    sqs.get_queue()
+
+    
