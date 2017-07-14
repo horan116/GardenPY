@@ -24,9 +24,14 @@ logfile = "/var/log/moisture_pull_push.log"
 # Logging #
 ###########
 
-logging.basicConfig(filename=logfile, 
-                    level=logging.INFO,
-                    format="%(asctime)s:%(levelname)s:%(message)s")
+try:
+    logging.basicConfig(filename=logfile, 
+                        level=logging.INFO,
+                        format="%(asctime)s:%(levelname)s:%(message)s")
+                    
+except PermissionError as e:
+    print("Unable to write to file. Run with elevated priv's or create file and give permissions to this user.")
+    print(e)
 
 ###########
 # Classes #
@@ -42,7 +47,7 @@ def get_usb():
 	    output = subprocess.check_output(['grep', '-i', 'usb'], stdin=ls.stdout)
 	    return output.decode('utf-8').strip()
 
-    except CalledProcessError as e:
+    except subprocess.CalledProcessError as e:
         logging.error("Failed to find USB Device. Make sure your Arduino is attach to this Pi.")
         logging.error(e)
 
@@ -52,4 +57,5 @@ def get_usb():
 ########
 
 if __name__ == '__main__':
+    logging.info("=====Beginning Execution=====")
     usb = get_usb()
