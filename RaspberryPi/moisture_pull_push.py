@@ -51,6 +51,26 @@ def get_usb():
         logging.error("Failed to find USB Device. Make sure your Arduino is attach to this Pi.")
         logging.error(e)
 
+def read_serial(usb):
+	# Now that we have our USB device. Lets go ahead and pull the latest data from our soil.
+	# Once some data is found on our serial connection, we will break the while loop and return the data.
+
+	device = '/dev/{0}'.format(usb)
+	
+	input = serial.Serial(
+	port=device,
+	baudrate=9600,
+	parity=serial.PARITY_NONE,
+	stopbits=serial.STOPBITS_ONE,
+	bytesize=serial.EIGHTBITS,
+	timeout=1
+	)
+
+	while True:
+		time.sleep(1)
+		data = input.readline()
+		if data:
+			return data.strip()
 
 ########
 # Main #
