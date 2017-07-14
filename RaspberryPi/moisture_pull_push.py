@@ -10,6 +10,8 @@ that the aws cli is installed and configured.
 ###########
 
 import time
+import sys.exit
+import os.path, os.getusername
 import serial
 import subprocess
 import logging
@@ -49,21 +51,31 @@ class SQS():
         '''
         Some definitions that we can set during instantiation for the SQS Queue.
         '''
-        self.sqs = boto3.resource('sqs')
+        self.sqs = boto3.client('sqs')
         self.queue_name = "GardenPY"
-        self.queue = self.sqs.get_queue_by_name(QueueName=self.queue_name)
+        self.queue_url = self.sqs.list_queues(QueueNamePrefix="GardenPY")['QueueUrls'][0]
 
-    def get_queue(self):
+    def get_queue_name(self):
         '''
         Getter used for troubleshooting
         '''
-        print(self.queue_name)
-        print(self.queue.url)
-
+        return self.queue_name
+    
+    def get_queue_url(self):
+        '''
+        Getter used for troubleshooting
+        '''
+        return self.queue_url
 
 #############
 # Functions #
 #############
+
+def check_aws():
+    if not os.path.isfile('~/.aws/credentials') or not os.path.isfile('~/.aws/config'):
+        print("Cannot locate configuration files for AWS for {}.".format(os.getusername()))
+        sys.exit(0)
+
 def get_usb():
 	# Lets make sure we have the correct usb device because it has been sketchy at best it being USB0
     try:
@@ -102,9 +114,12 @@ def read_serial(usb):
 
 if __name__ == '__main__':
     logging.info("=====Beginning Execution=====")
+    check_aws()
     #usb = get_usb()
     #data = read_serial(usb)
     sqs = SQS()
-    sqs.get_queue()
+    print(sqs.get_queue_name())
+    print(sqs.get_queue_url())
+
 
     
