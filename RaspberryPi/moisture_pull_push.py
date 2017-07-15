@@ -74,7 +74,7 @@ class SQS():
 def check_aws():
     # Lets make sure our AWS configuration has taken place.
     if not os.path.isfile(os.path.expanduser('~/.aws/credentials')) or not os.path.isfile(os.path.expanduser('~/.aws/config')):
-        print("Cannot locate configuration files for AWS for {}.".format(os.getusername()))
+        logging.error("Cannot locate configuration files for AWS for this user.")
         sys.exit(0)
 
 def get_usb():
