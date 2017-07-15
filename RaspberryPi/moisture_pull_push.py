@@ -10,8 +10,8 @@ that the aws cli is installed and configured.
 ###########
 
 import time
-import sys.exit
-import os.path, os.getusername
+import sys
+import os
 import serial
 import subprocess
 import logging
