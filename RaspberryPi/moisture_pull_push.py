@@ -72,7 +72,8 @@ class SQS():
 #############
 
 def check_aws():
-    if not os.path.isfile('~/.aws/credentials') or not os.path.isfile('~/.aws/config'):
+    # Lets make sure our AWS configuration has taken place.
+    if not os.path.isfile(os.path.expanduser('~/.aws/credentials')) or not os.path.isfile(os.path.expanduser('~/.aws/config')):
         print("Cannot locate configuration files for AWS for {}.".format(os.getusername()))
         sys.exit(0)
 
@@ -115,8 +116,8 @@ def read_serial(usb):
 if __name__ == '__main__':
     logging.info("=====Beginning Execution=====")
     check_aws()
-    #usb = get_usb()
-    #data = read_serial(usb)
+    usb = get_usb()
+    data = read_serial(usb)
     sqs = SQS()
     print(sqs.get_queue_name())
     print(sqs.get_queue_url())
